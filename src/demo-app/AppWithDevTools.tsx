@@ -1,8 +1,7 @@
 import App from "./App";
-import DevTools from "../DevTools";
 import Select from "../components/Select";
 import { mockPersonas } from "./mocks/data/personas.mocks";
-import { useDevToolsState } from "../hooks/useDevToolsState";
+import { useDevToolsState, Switchboard } from "react-switchboard";
 import Field from "../components/Field";
 import { requestHandlers } from "./mocks/handlers/handlers";
 import useUserSync from "./useUserSync";
@@ -10,6 +9,7 @@ import Button from "../components/Button";
 import { addTodo, deleteTodo } from "./apis/todo-apis";
 import Input from "../components/Input";
 import { useState } from "react";
+import ErrorFallback from "./ErrorFallback";
 
 type SimulateAction = "add" | "edit" | "delete";
 
@@ -24,8 +24,9 @@ export default function AppWithDevTools() {
   const [simulateDelete, setSimulateDelete] = useState("");
 
   return (
-    <DevTools
-      httpSettings={{
+    <Switchboard
+      ErrorFallback={ErrorFallback}
+      mswSettings={{
         requestHandlers,
         startOptions: {
           // Don't log mocked requests to the browser console.
@@ -45,10 +46,6 @@ export default function AppWithDevTools() {
       }}
       // Using a key to reinitialize the app when the userId changes.
       appSlot={<App key={userId} />}
-      openKeyboardShortcut={{ key: "ArrowDown", alt: true }}
-      customSettings={{
-        userId,
-      }}
     >
       <Field>
         <Select
@@ -124,6 +121,6 @@ export default function AppWithDevTools() {
           </Field>
         )}
       </details>
-    </DevTools>
+    </Switchboard>
   );
 }
